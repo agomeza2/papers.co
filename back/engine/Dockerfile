@@ -7,4 +7,4 @@ COPY .env .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY indexer.py .
-CMD ["python", "indexer.py"]
+CMD ["python","-u", "indexer.py"]

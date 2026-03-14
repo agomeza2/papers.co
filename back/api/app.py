@@ -1,50 +1,67 @@
-from flask import Flask, request, jsonify
-from pymongo import MongoClient
 import os
+import time
+from flask import Flask, request, jsonify
+from elasticsearch import Elasticsearch
 from dotenv import load_dotenv
 
 load_dotenv()
 
-MONGO_USER = os.getenv("MONGO_USER")
-MONGO_PASS = os.getenv("MONGO_PASSWORD")
-MONGO_DB   = os.getenv("MONGO_DB")
-MONGO_COLLECTION = "works"
-
-uri = "mongodb://"+MONGO_USER+":"+MONGO_PASS+"@mongo:27017/"+MONGO_DB
-client = MongoClient(uri)
-db = client.get_database()
-collection = db.get_collection(MONGO_COLLECTION)
+ES_HOST = os.getenv("ES_HOST", "http://elasticsearch:9200")
+INDEX_NAME = "documents"
 
 app = Flask(__name__)
+
+def wait_for_elasticsearch():
+    while True:
+        try:
+            es = Elasticsearch(ES_HOST)
+            if es.ping():
+                print("Elasticsearch listo")
+                return es
+        except Exception as e:
+            print("Esperando Elasticsearch...", e)
+        time.sleep(3)
+
+es = wait_for_elasticsearch()
+
 
 @app.route("/search", methods=["POST"])
 def search():
     query = request.json.get("query")
+
     if not query:
         return {"error": "No query provided"}, 400
 
-    # Regex search on multiple fields (case-insensitive)
-    search_filter = {
-        "$or": [
-            {"title": {"$regex": query, "$options": "i"}},
-            {"raw_author_name": {"$regex": query, "$options": "i"}},
-            {"keywords.display_name": {"$regex": query, "$options": "i"}},
-            {"concepts.display_name": {"$regex": query, "$options": "i"}},
-            {"raw_affiliation_strings": {"$regex": query, "$options": "i"}}
-        ]
+    es_query = {
+        "query": {
+            "multi_match": {
+                "query": query,
+                "fields": [
+                    "title",
+                    "raw_author_name",
+                    "keywords.display_name",
+                    "concepts.display_name",
+                    "raw_affiliation_strings"
+                ]
+            }
+        },
+        "size": 50
     }
 
-    results = list(collection.find(search_filter).limit(50))
+    response = es.search(index=INDEX_NAME, body=es_query)
 
-    # Convert ObjectId to string
-    for r in results:
-        r["_id"] = str(r["_id"])
+    results = []
+    for hit in response["hits"]["hits"]:
+        doc = hit["_source"]
+        results.append(doc)
 
     return jsonify(results)
 
+
 @app.route("/")
 def home():
-    return {"status": "API running"}
+    return {"status": "API running with Elasticsearch"}
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
