@@ -1,0 +1,19 @@
+Write-Host "Bienvenido al buscador interactivo. Escribe '/bye' para salir."
+
+while ($true) {
+    # Leer input del usuario
+    $texto = Read-Host "Buscar:"
+
+    # Salir si el usuario escribe /bye
+    if ($texto -eq "/bye") {
+        Write-Host "Saliendo..."
+        break
+    }
+
+    # Escapar texto para JSON
+    $texto_escapado = $texto -replace '"','\"'
+
+    # Hacer la consulta a la API Flask
+    $json = "{`"query`": `"$texto_escapado`"}"
+    Invoke-RestMethod -Uri "http://localhost:5000/search" -Method Post -Body $json -ContentType "application/json" | ConvertTo-Json -Depth 5
+}
