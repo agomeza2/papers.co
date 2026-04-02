@@ -1,0 +1,178 @@
+/* ========================= */
+/* RESET GENERAL */
+/* ========================= */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #fff;
+  color: #202124;
+}
+
+/* ========================= */
+/* 🟢 HOME (BUSCADOR CENTRADO) */
+/* ========================= */
+body.home {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Contenedor centrado */
+body.home .container {
+  text-align: center;
+}
+
+/* Título grande */
+body.home h1 {
+  font-size: 60px;
+  color: #4285f4;
+  margin-bottom: 20px;
+}
+
+/* Barra de búsqueda (home) */
+body.home .search-box {
+  width: 400px;
+  max-width: 90%;
+  padding: 12px 20px;
+  border-radius: 30px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+body.home .search-box:focus {
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  border-color: #4285f4;
+}
+
+/* Botón */
+body.home .btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  background: #4285f4;
+  color: white;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+body.home .btn:hover {
+  background: #3367d6;
+}
+
+/* ========================= */
+/* 🔵 RESULTADOS (TIPO GOOGLE) */
+/* ========================= */
+
+/* Contenedor */
+body.results .container {
+  max-width: 700px;
+  margin: 20px auto;
+  padding: 0 20px;
+}
+
+/* Header superior */
+.search-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 15px 30px;
+  border-bottom: 1px solid #e0e0e0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Logo pequeño */
+.logo-small {
+  font-size: 24px;
+  color: #4285f4;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Barra de búsqueda en resultados */
+body.results .search-box {
+  width: 100%;
+  max-width: 500px;
+  padding: 10px 20px;
+  border-radius: 30px;
+  border: 1px solid #dfe1e5;
+  outline: none;
+  font-size: 16px;
+}
+
+body.results .search-box:focus {
+  box-shadow: 0 1px 6px rgba(32,33,36,0.28);
+}
+
+/* Botón */
+body.results .btn {
+  padding: 8px 18px;
+  border: none;
+  background: #4285f4;
+  color: white;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+body.results .btn:hover {
+  background: #3367d6;
+}
+
+/* ========================= */
+/* RESULTADOS LISTA */
+/* ========================= */
+
+#resultados {
+  margin-top: 20px;
+}
+
+/* Cada resultado */
+.resultado-item {
+  margin-bottom: 25px;
+}
+
+/* Título */
+.resultado-item h3 {
+  font-size: 20px;
+  color: #1a0dab;
+  margin: 0 0 5px 0;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+.resultado-item h3:hover {
+  text-decoration: underline;
+}
+
+/* Link verde */
+.resultado-item a {
+  color: #006621;
+  font-size: 14px;
+  display: block;
+  margin-bottom: 5px;
+  text-decoration: none;
+}
+
+/* Meta info */
+.meta {
+  font-size: 13px;
+  color: #70757a;
+  margin-bottom: 5px;
+}
+
+/* Autores */
+.authors {
+  font-size: 13px;
+  color: #4d5156;
+}
+
+/* Separador */
+hr {
+  border: none;
+  border-top: 1px solid #e0e0e0;
+  margin: 20px 0;
+}
