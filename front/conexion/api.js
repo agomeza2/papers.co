@@ -1,14 +1,17 @@
 const API_URL = "http://localhost:5000";
 
 // 🔍 Buscar documentos
-export async function busquedaDocumentos(query) {
+export async function busquedaDocumentos(query, page = 1) {
   try {
     const respuesta = await fetch(`${API_URL}/search`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ query })
+      body: JSON.stringify({ 
+        query,
+        page,
+        size:10 })
     });
 
     if (!respuesta.ok) {

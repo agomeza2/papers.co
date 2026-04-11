@@ -23,29 +23,45 @@ def search():
     if not query:
         return jsonify({"error": "No query provided"}), 400
 
+    page = data.get("page", 1)
+    size = data.get("size", 10)
+    from_ = (page - 1) * size
+
+    print("PAGE:", page, "FROM:", from_, flush=True)
+
     es_query = {
         "query": {
-            "multi_match": {
-                "query": query,
-                "fields": [
-                    "title^3",
-                    "authors",
-                    "keywords",
-                    "concepts"
-                ],
-                "type": "best_fields"
-            }
+           "multi_match": {
+            "query": query,
+            "fields": [
+                "title^3",
+                "authors",
+                "keywords",
+                "concepts"
+            ],
+            "type": "best_fields",
+            "fuzziness": "AUTO"   # 🔥 IMPORTANTE
+        }
         },
-        "size": 50
+        "from": from_,
+        "size": size
     }
+
+    
 
     response = es.search(index=INDEX_NAME, body=es_query)
 
-    results = []
-    for hit in response["hits"]["hits"]:
-        results.append(hit["_source"])
+    hits = response["hits"]["hits"]
+    total = response["hits"]["total"]["value"]
 
-    return jsonify(results)
+    results = [hit["_source"] for hit in hits]
+
+    return jsonify({
+        "results": results,
+        "total": total,
+        "page": page,
+        "size": size
+    })
 
 
 # =========================

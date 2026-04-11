@@ -1,5 +1,7 @@
 import { busquedaDocumentos } from "./api.js";
 
+
+
 console.log("JS cargado correctamente");
 
 document.addEventListener("DOMContentLoaded", () => {

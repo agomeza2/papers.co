@@ -28,23 +28,31 @@
     <div id="resultados"></div>
   </div>
 
+  <div id="pagination"></div>
+
   <script type="module">
     import { busquedaDocumentos } from "../conexion/api.js";
-
+    let currentPage = 1;
+    
     async function cargarResultados() {
+      
+      console.log("Página actual:", currentPage);
+     
       const query = localStorage.getItem("query");
+      console.log("Enviando a API:", query, currentPage);
 
       if (!query) {
         document.getElementById("resultados").innerHTML = "<p>No hay búsqueda.</p>";
         return;
       }
 
-      const data = await busquedaDocumentos(query);
+      const response = await busquedaDocumentos(query, currentPage);
+      const data = response.results;
 
       const container = document.getElementById("resultados");
       container.innerHTML = "";
 
-      if (data.length === 0) {
+      if (!data || data.length === 0) {
         container.innerHTML = "<p>No se encontraron resultados.</p>";
         return;
       }
@@ -73,7 +81,40 @@
 
         container.appendChild(div);
       });
+      renderPagination(response)
+      
     }
+
+    function renderPagination(response) {
+    const pagination = document.getElementById("pagination");
+    pagination.innerHTML = "";
+
+    const totalPages = Math.ceil(response.total / response.size);
+
+    if (currentPage > 1) {
+      const prev = document.createElement("button");
+      prev.innerText = "← Anterior";
+      prev.onclick = () => {
+        currentPage--;
+        cargarResultados();
+      };
+      pagination.appendChild(prev);
+    }
+
+    const info = document.createElement("span");
+    info.innerText = ` Página ${currentPage} de ${totalPages} `;
+    pagination.appendChild(info);
+
+    if (currentPage < totalPages) {
+      const next = document.createElement("button");
+      next.innerText = "Siguiente →";
+      next.onclick = () => {
+        currentPage++;
+        cargarResultados();
+      };
+      pagination.appendChild(next);
+    }
+  }
 
     cargarResultados();
 
